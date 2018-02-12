@@ -15,15 +15,38 @@ const getExemplary2d =
                   dimensions: [3, 3],
               });
 
+const getBigger2d =
+          (item = CONSECUTIVE) =>
+              ({
+                  array: Array.from(
+                      { length: 16 },
+                      item == CONSECUTIVE
+                          ? (_, i) => i
+                          : () => item,
+                  ),
+
+                  dimensions: [4, 4],
+              });
+
 const getPrototype =
           () =>
               Object.getPrototypeOf(multidimensionalArray());
 
-const getFull2d =
-          (item = CONSECUTIVE) =>
+const getFullFlat =
+          () =>
               Object.assign(
                   Object.create(getPrototype()),
-                  getExemplary2d(item),
+                  {
+                      array:      [12, 13, 14, 15, 16, 17, 18],
+                      dimensions: [7],
+                  },
+              );
+
+const getFull2d =
+          (item = CONSECUTIVE, structure = getExemplary2d(item)) =>
+              Object.assign(
+                  Object.create(getPrototype()),
+                  structure,
               );
 
 describe('itself', () => {
@@ -48,7 +71,13 @@ describe('called', () => {
         expect(mProto).not.toBeNull();
         expect(typeof mProto).toBe('object');
 
-        const expectedProps = ['array', 'dimensions', 'init', 'set', 'get', 'findIndex'];
+        const expectedProps = [
+            'array', 'dimensions', 'init',
+            'set', 'get', 'findIndex',
+            'getDimensions', 'getNeighbours',
+            // 'map',
+            // 'map2dRow', 'map2dColumn'
+        ];
 
         expect(mProps).toEqual(expect.arrayContaining(expectedProps));
         expect(mProps).toHaveLength(expectedProps.length);
@@ -79,6 +108,14 @@ describe('called', () => {
 describe('findIndex', () => {
     const { findIndex } = getPrototype();
 
+    test('should calculate proper index for given coordinates of 1D array', () => {
+        const flat = getFullFlat();
+
+        expect(findIndex.call(flat, 0)).toBe(0);
+        expect(findIndex.call(flat, 1)).toBe(1);
+        expect(findIndex.call(flat, 2)).toBe(2);
+    });
+
     test('should calculate proper index for given coordinates of 2D multidimensional array', () => {
         const exemplary = getExemplary2d(17);
 
@@ -93,7 +130,13 @@ describe('findIndex', () => {
         expect(findIndex.call(exemplary, 2, 2)).toBe(8);
     });
 
-    // TODO: should throw an error for mismatched dimensions
+    test('should throw an error for mismatched coordinates', () => {
+        const exemplary = getExemplary2d();
+
+        expect(() => {
+            findIndex.call(exemplary, 4, 4);
+        }).toThrow();
+    });
 });
 
 describe('get', () => {
@@ -112,10 +155,18 @@ describe('get', () => {
         expect(get.call(full, 2, 1)).toBe(7);
         expect(get.call(full, 2, 2)).toBe(8);
     });
+
+    test('should throw an error for mismatched coordinates', () => {
+        const full = getFull2d();
+
+        expect(() => {
+            expect(get.call(full, 4, 4));
+        }).toThrow();
+    });
 });
 
 describe('set', () => {
-    const { set }   = getPrototype();
+    const { set } = getPrototype();
 
     test('should be chainable (return itself)', () => {
         const full = getFull2d();
@@ -138,6 +189,53 @@ describe('set', () => {
         set.call(full, 666, 2, 2);
         expect(full.array[8]).toBe(666);
     });
+
+    test('should throw an error for mismatched coordinates', () => {
+        const full = getFull2d();
+
+        expect(() => {
+            expect(set.call(full, 667, 4, 4));
+        }).toThrow();
+    });
+});
+
+describe('getDimensions', () => {
+    const { getDimensions } = getPrototype();
+
+    test('should return multidimensional array’s dimensions', () => {
+        const exemplary = getExemplary2d();
+
+        expect(getDimensions.call(exemplary)).toEqual(expect.arrayContaining([3, 3]));
+    });
+});
+
+describe('getNeighbours', () => {
+    const { getNeighbours } = getPrototype();
+
+    test('should return neighbours of given cell in 1D array', () => {
+        const flat = getFullFlat();
+
+        expect(getNeighbours.call(flat, 1)).toHaveLength(2);
+        expect(getNeighbours.call(flat, 0)).toEqual(expect.arrayContaining([18, 13]));
+        expect(getNeighbours.call(flat, 1)).toEqual(expect.arrayContaining([12, 14]));
+        expect(getNeighbours.call(flat, 2)).toEqual(expect.arrayContaining([13, 15]));
+        expect(getNeighbours.call(flat, 3)).toEqual(expect.arrayContaining([14, 16]));
+        expect(getNeighbours.call(flat, 4)).toEqual(expect.arrayContaining([15, 17]));
+        expect(getNeighbours.call(flat, 5)).toEqual(expect.arrayContaining([16, 18]));
+        expect(getNeighbours.call(flat, 6)).toEqual(expect.arrayContaining([12, 17]));
+    });
+
+    // 0 1 2 3
+    // 4 5 6 7
+    // 8 9 a b
+    // c d e f
+
+    // test('should return neighbours of given cell in 2D array', () => {
+    //     const full = getFull2d(CONSECUTIVE, getBigger2d(CONSECUTIVE));
+    //
+    //     expect(getNeighbours.call(full, 1, 1)).toHaveLength(8);
+    //     expect(getNeighbours.call(full, 1, 1)).toEqual(expect.arrayContaining([0, 1, 2, 4, 6, 8, 9, 10]));
+    // });
 });
 
 // TODO: map (general)
