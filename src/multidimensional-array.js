@@ -70,23 +70,37 @@ const prototype = {
         let rest = prePoints.slice();
 
         const addPoints = (points, [set, ...rest]) => {
-            set.forEach(
-                (coordinate) => points.push(coordinate)
-            );
+            // TODO: trampoline
+            if (points.length) {
+                let newPoints = [];
 
-            return points;
+                points.forEach(
+                    (base) =>
+                        set.forEach(
+                            (coordinate) => newPoints.push([...base, coordinate])
+                        )
+                );
+
+                points = newPoints;
+            } else {
+                set.forEach(
+                    (coordinate) => points.push([coordinate])
+                );
+            }
+
+            return rest.length
+                ? addPoints(points, rest)
+                : points;
         };
-
-        addPoints(points, rest);
 
         const index = this.findIndex(...coordinates);
 
-        return points
+        return addPoints(points, rest)
             .filter(
-                (pointIndex) => pointIndex != index,
+                (pointIndex) => this.findIndex(...pointIndex) != index
             )
             .map(
-                (coordinates) => this.array[this.findIndex(coordinates)]
+                (coordinates) => this.array[this.findIndex(...coordinates)]
             );
     },
 };
