@@ -8,7 +8,7 @@ const getExemplary2d =
                   array: Array.from(
                       { length: 9 },
                       item == CONSECUTIVE
-                          ? (_, i) => i
+                          ? (_, i) => 10 + i
                           : () => item,
                   ),
 
@@ -21,7 +21,7 @@ const getBigger2d =
                   array: Array.from(
                       { length: 16 },
                       item == CONSECUTIVE
-                          ? (_, i) => i
+                          ? (_, i) => 10 + i
                           : () => item,
                   ),
 
@@ -74,7 +74,8 @@ describe('called', () => {
         const expectedProps = [
             'array', 'dimensions', 'init',
             'set', 'get', 'findIndex',
-            'getDimensions', 'getNeighbours',
+            'getDimensions', 'getAreaAround', 'getNeighbours',
+            // clone
             // 'map',
             // 'map2dRow', 'map2dColumn'
         ];
@@ -145,15 +146,15 @@ describe('get', () => {
     test('should retrieve values of 0..8 for multidimensional array of 3x3', () => {
         const full = getFull2d();
 
-        expect(get.call(full, 0, 0)).toBe(0);
-        expect(get.call(full, 0, 1)).toBe(1);
-        expect(get.call(full, 0, 2)).toBe(2);
-        expect(get.call(full, 1, 0)).toBe(3);
-        expect(get.call(full, 1, 1)).toBe(4);
-        expect(get.call(full, 1, 2)).toBe(5);
-        expect(get.call(full, 2, 0)).toBe(6);
-        expect(get.call(full, 2, 1)).toBe(7);
-        expect(get.call(full, 2, 2)).toBe(8);
+        expect(get.call(full, 0, 0)).toBe(10);
+        expect(get.call(full, 0, 1)).toBe(11);
+        expect(get.call(full, 0, 2)).toBe(12);
+        expect(get.call(full, 1, 0)).toBe(13);
+        expect(get.call(full, 1, 1)).toBe(14);
+        expect(get.call(full, 1, 2)).toBe(15);
+        expect(get.call(full, 2, 0)).toBe(16);
+        expect(get.call(full, 2, 1)).toBe(17);
+        expect(get.call(full, 2, 2)).toBe(18);
     });
 
     test('should throw an error for mismatched coordinates', () => {
@@ -168,6 +169,7 @@ describe('get', () => {
 describe('set', () => {
     const { set } = getPrototype();
 
+    // TODO: should actually return new instance of itself
     test('should be chainable (return itself)', () => {
         const full = getFull2d();
 
@@ -177,7 +179,7 @@ describe('set', () => {
     test('should change the value of cell #1', () => {
         const full = getFull2d();
 
-        expect(full.array[3]).toBe(3);
+        expect(full.array[3]).toBe(13);
         set.call(full, 666, 1, 0);
         expect(full.array[3]).toBe(666);
     });
@@ -185,7 +187,7 @@ describe('set', () => {
     test('should change the value of cell #2', () => {
         const full = getFull2d();
 
-        expect(full.array[8]).toBe(8);
+        expect(full.array[8]).toBe(18);
         set.call(full, 666, 2, 2);
         expect(full.array[8]).toBe(666);
     });
@@ -209,14 +211,51 @@ describe('getDimensions', () => {
     });
 });
 
+describe('getAreaAround', () => {
+    const { getAreaAround } = getPrototype();
+
+    test('should return given cell and neighbouring cells in 1D array', () => {
+        const flat = getFullFlat();
+
+        expect(getAreaAround.call(flat, 0)).toHaveLength(1);
+        expect(getAreaAround.call(flat, 1)).toHaveLength(1);
+        expect(getAreaAround.call(flat, 2)).toHaveLength(1);
+        expect(getAreaAround.call(flat, 3)).toHaveLength(1);
+        expect(getAreaAround.call(flat, 4)).toHaveLength(1);
+        expect(getAreaAround.call(flat, 5)).toHaveLength(1);
+        expect(getAreaAround.call(flat, 6)).toHaveLength(1);
+
+        expect(getAreaAround.call(flat, 0)[0]).toHaveLength(3);
+        expect(getAreaAround.call(flat, 1)[0]).toHaveLength(3);
+        expect(getAreaAround.call(flat, 2)[0]).toHaveLength(3);
+        expect(getAreaAround.call(flat, 3)[0]).toHaveLength(3);
+        expect(getAreaAround.call(flat, 4)[0]).toHaveLength(3);
+        expect(getAreaAround.call(flat, 5)[0]).toHaveLength(3);
+        expect(getAreaAround.call(flat, 6)[0]).toHaveLength(3);
+
+        expect(getAreaAround.call(flat, 0)[0]).toEqual(expect.arrayContaining([6, 0, 1]));
+        expect(getAreaAround.call(flat, 1)[0]).toEqual(expect.arrayContaining([0, 1, 2]));
+        expect(getAreaAround.call(flat, 2)[0]).toEqual(expect.arrayContaining([1, 2, 3]));
+        expect(getAreaAround.call(flat, 3)[0]).toEqual(expect.arrayContaining([2, 3, 4]));
+        expect(getAreaAround.call(flat, 4)[0]).toEqual(expect.arrayContaining([3, 4, 5]));
+        expect(getAreaAround.call(flat, 5)[0]).toEqual(expect.arrayContaining([4, 5, 6]));
+        expect(getAreaAround.call(flat, 6)[0]).toEqual(expect.arrayContaining([5, 6, 0]));
+    });
+
+    test('should return given cell’s and neighbouring rows and columns in 2D array', () => {
+        // TODO
+        expect(true).toBe(false);
+    });
+});
+
 describe('getNeighbours', () => {
     const { getNeighbours } = getPrototype();
 
     test('should return neighbours of given cell in 1D array', () => {
         const flat = getFullFlat();
 
-        expect(getNeighbours.call(flat, 1)).toHaveLength(2);
         expect(getNeighbours.call(flat, 0)).toEqual(expect.arrayContaining([18, 13]));
+        expect(getNeighbours.call(flat, 1)).toHaveLength(2);
         expect(getNeighbours.call(flat, 1)).toEqual(expect.arrayContaining([12, 14]));
         expect(getNeighbours.call(flat, 2)).toEqual(expect.arrayContaining([13, 15]));
         expect(getNeighbours.call(flat, 3)).toEqual(expect.arrayContaining([14, 16]));
@@ -225,16 +264,17 @@ describe('getNeighbours', () => {
         expect(getNeighbours.call(flat, 6)).toEqual(expect.arrayContaining([12, 17]));
     });
 
-    // 0 1 2 3
-    // 4 5 6 7
-    // 8 9 a b
-    // c d e f
+    // 10 11 12 13
+    // 14 15 16 17
+    // 18 19 20 21
+    // 22 23 24 25
 
     // test('should return neighbours of given cell in 2D array', () => {
     //     const full = getFull2d(CONSECUTIVE, getBigger2d(CONSECUTIVE));
     //
+    //     expect(getNeighbours.call(full, 0, 0)).toEqual(expect.arrayContaining([15, 22, 23, 13, 11, 17, 14, 15]));
     //     expect(getNeighbours.call(full, 1, 1)).toHaveLength(8);
-    //     expect(getNeighbours.call(full, 1, 1)).toEqual(expect.arrayContaining([0, 1, 2, 4, 6, 8, 9, 10]));
+    //     expect(getNeighbours.call(full, 1, 1)).toEqual(expect.arrayContaining([10, 11, 12, 14, 16, 18, 19, 20]));
     // });
 });
 
