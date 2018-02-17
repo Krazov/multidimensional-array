@@ -103,6 +103,28 @@ const prototype = {
                 (coordinates) => this.array[this.findIndex(...coordinates)]
             );
     },
+
+    getAreaAround(...coordinates) {
+        return coordinates.reduce(
+            (points, point) => {
+                const lastIndex = this.array.length - 1;
+
+                const prev = point - 1;
+                const next = point + 1;
+
+                let tmp = [];
+
+                tmp.push(prev > -1 ? prev : lastIndex);
+                tmp.push(point);
+                tmp.push(next <= lastIndex ? next : 0);
+
+                points.push(tmp);
+
+                return points;
+            },
+            [],
+        );
+    },
 };
 
 // memoization?
