@@ -46,59 +46,47 @@ const prototype = {
 
     getNeighbours(...coordinates) {
         const prePoints = coordinates.reduce(
-            (points, point, index) => {
-                const length = this.array.length;
+            (points, point) => {
+                const lastIndex = this.array.length - 1;
 
                 const prev = point - 1;
                 const next = point + 1;
 
                 let tmp = [];
 
-                tmp.push(this.array[prev] !== undefined ? prev : length - 1);
+                tmp.push(prev > -1 ? prev : lastIndex);
                 tmp.push(point);
-                tmp.push(this.array[next] !== undefined ? next : 0);
+                tmp.push(next <= lastIndex ? next : 0);
 
-                return (points.push(tmp), points);
+                points.push(tmp);
+
+                return points;
             },
             [],
         );
 
-        const furtherPoints = (points, array, segment) => {
-            // const [set, ...rest] = segment;
-            //
-            // for (let i = 0; i < segment.length; i += 1) {
-            //     array.push(set[i]);
-            //
-            //     if (i + 1 < set.length) {
-            //         furtherPoints(points, array, rest);
-            //     } else {
-            //         points.push(array);
-            //     }
-            // }
-        };
-
         let points = [];
 
-        let set = prePoints[0];
+        let rest = prePoints.slice();
 
-        for (let j = 0; j < set.length; j += 1) {
-            let tmpArray = [
-                set[j],
-            ];
+        const addPoints = (points, [set, ...rest]) => {
+            set.forEach(
+                (coordinate) => points.push(coordinate)
+            );
 
-            if (j + 1 < prePoints.length) {
-                furtherPoints(points, tmpArray, prePoints.slice(1));
-            } else {
-                points.push(tmpArray);
-            }
-        }
+            return points;
+        };
+
+        addPoints(points, rest);
+
+        const index = this.findIndex(...coordinates);
 
         return points
             .filter(
-                (pointIndex) => pointIndex != this.findIndex(...coordinates),
+                (pointIndex) => pointIndex != index,
             )
             .map(
-                (coordinates) => this.array[this.findIndex(...coordinates)],
+                (coordinates) => this.array[this.findIndex(coordinates)]
             );
     },
 };
