@@ -131,6 +131,7 @@ const prototype = {
     },
 };
 
-// memoization?
+// TODO: memoization?
+// TODO: using `propertiesObject` instead of init function, at least for dimensions
 
 export default (...dimensions) => Object.create(prototype).init(...dimensions);
