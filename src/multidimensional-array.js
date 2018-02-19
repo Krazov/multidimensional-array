@@ -105,9 +105,13 @@ const prototype = {
     },
 
     getAreaAround(...coordinates) {
+        // if (coordinates.some((item, index) => item > this.dimensions[index])) {
+        //     throw new RangeError('Coordinates don’t match array dimensions. Sorry.');
+        // }
+
         return coordinates.reduce(
-            (points, point) => {
-                const lastIndex = this.array.length - 1;
+            (points, point, index) => {
+                const lastIndex = this.dimensions[index] - 1;
 
                 const prev = point - 1;
                 const next = point + 1;
