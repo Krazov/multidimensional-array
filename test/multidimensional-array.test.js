@@ -75,6 +75,7 @@ describe('called', () => {
             'array', 'dimensions', 'init',
             'set', 'get', 'findIndex',
             'getDimensions', 'getAreaAround', 'getNeighbours',
+            // isInside
             // clone
             // 'map',
             // 'map2dRow', 'map2dColumn'
@@ -243,8 +244,94 @@ describe('getAreaAround', () => {
     });
 
     test('should return given cell’s and neighbouring rows and columns in 2D array', () => {
-        // TODO
-        expect(true).toBe(false);
+        const full = getFull2d(CONSECUTIVE, getBigger2d(CONSECUTIVE));
+
+        expect(getAreaAround.call(full, 0, 0)).toHaveLength(2);
+        expect(getAreaAround.call(full, 0, 1)).toHaveLength(2);
+        expect(getAreaAround.call(full, 0, 2)).toHaveLength(2);
+        expect(getAreaAround.call(full, 1, 0)).toHaveLength(2);
+        expect(getAreaAround.call(full, 1, 1)).toHaveLength(2);
+        expect(getAreaAround.call(full, 1, 2)).toHaveLength(2);
+        expect(getAreaAround.call(full, 2, 0)).toHaveLength(2);
+        expect(getAreaAround.call(full, 2, 1)).toHaveLength(2);
+        expect(getAreaAround.call(full, 2, 2)).toHaveLength(2);
+
+        expect(getAreaAround.call(full, 0, 0)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 0, 1)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 0, 2)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 0, 3)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 1, 0)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 1, 1)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 1, 2)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 1, 3)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 2, 0)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 2, 1)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 2, 2)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 2, 3)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 3, 0)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 3, 1)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 3, 2)[0]).toHaveLength(3);
+        expect(getAreaAround.call(full, 3, 3)[0]).toHaveLength(3);
+
+        expect(getAreaAround.call(full, 0, 0)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 0, 1)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 0, 2)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 0, 3)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 1, 0)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 1, 1)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 1, 2)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 1, 3)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 2, 0)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 2, 1)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 2, 2)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 2, 3)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 3, 0)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 3, 1)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 3, 2)[1]).toHaveLength(3);
+        expect(getAreaAround.call(full, 3, 3)[1]).toHaveLength(3);
+
+        // 10 11 12 13
+        // 14 15 16 17
+        // 18 19 20 21
+        // 22 23 24 25
+
+        expect(getAreaAround.call(full, 0, 0)[0]).toEqual(expect.arrayContaining([3, 0, 1]));
+        expect(getAreaAround.call(full, 0, 1)[0]).toEqual(expect.arrayContaining([3, 0, 1]));
+        expect(getAreaAround.call(full, 0, 2)[0]).toEqual(expect.arrayContaining([3, 0, 1]));
+        expect(getAreaAround.call(full, 0, 3)[0]).toEqual(expect.arrayContaining([3, 0, 1]));
+        expect(getAreaAround.call(full, 1, 0)[0]).toEqual(expect.arrayContaining([0, 1, 2]));
+        expect(getAreaAround.call(full, 1, 1)[0]).toEqual(expect.arrayContaining([0, 1, 2]));
+        expect(getAreaAround.call(full, 1, 2)[0]).toEqual(expect.arrayContaining([0, 1, 2]));
+        expect(getAreaAround.call(full, 1, 3)[0]).toEqual(expect.arrayContaining([0, 1, 2]));
+        expect(getAreaAround.call(full, 2, 0)[0]).toEqual(expect.arrayContaining([1, 2, 3]));
+        expect(getAreaAround.call(full, 2, 1)[0]).toEqual(expect.arrayContaining([1, 2, 3]));
+        expect(getAreaAround.call(full, 2, 2)[0]).toEqual(expect.arrayContaining([1, 2, 3]));
+        expect(getAreaAround.call(full, 2, 3)[0]).toEqual(expect.arrayContaining([1, 2, 3]));
+        expect(getAreaAround.call(full, 3, 0)[0]).toEqual(expect.arrayContaining([2, 3, 0]));
+        expect(getAreaAround.call(full, 3, 1)[0]).toEqual(expect.arrayContaining([2, 3, 0]));
+        expect(getAreaAround.call(full, 3, 2)[0]).toEqual(expect.arrayContaining([2, 3, 0]));
+        expect(getAreaAround.call(full, 3, 3)[0]).toEqual(expect.arrayContaining([2, 3, 0]));
+
+        expect(getAreaAround.call(full, 0, 0)[1]).toEqual(expect.arrayContaining([3, 0, 1]));
+        expect(getAreaAround.call(full, 0, 1)[1]).toEqual(expect.arrayContaining([0, 1, 2]));
+        expect(getAreaAround.call(full, 0, 2)[1]).toEqual(expect.arrayContaining([1, 2, 3]));
+        expect(getAreaAround.call(full, 0, 3)[1]).toEqual(expect.arrayContaining([2, 3, 0]));
+        expect(getAreaAround.call(full, 1, 0)[1]).toEqual(expect.arrayContaining([3, 0, 1]));
+        expect(getAreaAround.call(full, 1, 1)[1]).toEqual(expect.arrayContaining([0, 1, 2]));
+        expect(getAreaAround.call(full, 1, 2)[1]).toEqual(expect.arrayContaining([1, 2, 3]));
+        expect(getAreaAround.call(full, 1, 3)[1]).toEqual(expect.arrayContaining([2, 3, 0]));
+        expect(getAreaAround.call(full, 2, 0)[1]).toEqual(expect.arrayContaining([3, 0, 1]));
+        expect(getAreaAround.call(full, 2, 1)[1]).toEqual(expect.arrayContaining([0, 1, 2]));
+        expect(getAreaAround.call(full, 2, 2)[1]).toEqual(expect.arrayContaining([1, 2, 3]));
+        expect(getAreaAround.call(full, 2, 3)[1]).toEqual(expect.arrayContaining([2, 3, 0]));
+        expect(getAreaAround.call(full, 3, 0)[1]).toEqual(expect.arrayContaining([3, 0, 1]));
+        expect(getAreaAround.call(full, 3, 1)[1]).toEqual(expect.arrayContaining([0, 1, 2]));
+        expect(getAreaAround.call(full, 3, 2)[1]).toEqual(expect.arrayContaining([1, 2, 3]));
+        expect(getAreaAround.call(full, 3, 3)[1]).toEqual(expect.arrayContaining([2, 3, 0]));
+    });
+
+    test('should throw a range error for mismatched dimensions', () => {
+        expect('test').toBe('done');
     });
 });
 
