@@ -73,9 +73,8 @@ describe('called', () => {
 
         const expectedProps = [
             'array', 'dimensions', 'init',
-            'set', 'get', 'findIndex',
+            'set', 'get', 'findIndex', 'isInside',
             'getDimensions', 'getAreaAround', 'getNeighbours',
-            // isInside
             // clone
             // 'map',
             // 'map2dRow', 'map2dColumn'
@@ -107,6 +106,32 @@ describe('called', () => {
     });
 });
 
+describe('isInside', () => {
+    const { isInside } = getPrototype();
+
+    test('returns true when coordinates are inside 2D array', () => {
+        const exemplary = getExemplary2d();
+
+        expect(isInside.call(exemplary, 0, 0)).toBe(true);
+        expect(isInside.call(exemplary, 0, 1)).toBe(true);
+        expect(isInside.call(exemplary, 0, 2)).toBe(true);
+        expect(isInside.call(exemplary, 1, 0)).toBe(true);
+        expect(isInside.call(exemplary, 1, 1)).toBe(true);
+        expect(isInside.call(exemplary, 1, 2)).toBe(true);
+        expect(isInside.call(exemplary, 2, 0)).toBe(true);
+        expect(isInside.call(exemplary, 2, 1)).toBe(true);
+        expect(isInside.call(exemplary, 2, 2)).toBe(true);
+    });
+
+    test('returns false when coordinates are outside 2D array', () => {
+        const exemplary = getExemplary2d();
+
+        expect(isInside.call(exemplary, 0, 3)).toBe(false);
+        expect(isInside.call(exemplary, 1, 3)).toBe(false);
+        expect(isInside.call(exemplary, 2, 3)).toBe(false);
+    });
+});
+
 describe('findIndex', () => {
     const { findIndex } = getPrototype();
 
@@ -119,7 +144,7 @@ describe('findIndex', () => {
     });
 
     test('should calculate proper index for given coordinates of 2D multidimensional array', () => {
-        const exemplary = getExemplary2d(17);
+        const exemplary = getFull2d(17);
 
         expect(findIndex.call(exemplary, 0, 0)).toBe(0);
         expect(findIndex.call(exemplary, 0, 1)).toBe(1);

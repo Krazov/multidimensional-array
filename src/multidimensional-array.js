@@ -25,7 +25,7 @@ const prototype = {
     },
 
     findIndex(...coordinates) {
-        if (coordinates.some((item, index) => item > this.dimensions[index])) {
+        if (!this.isInside(...coordinates)) {
             throw new RangeError('Coordinates outside of multidimensional array. Sorry.');
         }
 
@@ -38,6 +38,10 @@ const prototype = {
         const last = coordinates.slice(-1)[0];
 
         return most.reduce((final, current, index) => final + current * this.dimensions[index], 0) + last;
+    },
+
+    isInside(...coordinates) {
+        return coordinates.every((item, index) => item < this.dimensions[index]);
     },
 
     getDimensions() {
@@ -105,7 +109,7 @@ const prototype = {
     },
 
     getAreaAround(...coordinates) {
-        // if (coordinates.some((item, index) => item > this.dimensions[index])) {
+        // if (!this.isInside(...coordinates) {
         //     throw new RangeError('Coordinates don’t match array dimensions. Sorry.');
         // }
 
