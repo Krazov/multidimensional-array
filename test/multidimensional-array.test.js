@@ -356,7 +356,12 @@ describe('getAreaAround', () => {
     });
 
     test('should throw a range error for mismatched dimensions', () => {
-        expect('test').toBe('done');
+        const full = getFull2d(CONSECUTIVE, getBigger2d(CONSECUTIVE));
+
+        expect(() => {
+            expect(getAreaAround.call(full, 4, 4));
+        }).toThrow();
+
     });
 });
 

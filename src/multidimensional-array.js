@@ -109,9 +109,9 @@ const prototype = {
     },
 
     getAreaAround(...coordinates) {
-        // if (!this.isInside(...coordinates) {
-        //     throw new RangeError('Coordinates don’t match array dimensions. Sorry.');
-        // }
+        if (!this.isInside(...coordinates)) {
+            throw new RangeError('Coordinates don’t match array dimensions. Sorry.');
+        }
 
         return coordinates.reduce(
             (points, point, index) => {
