@@ -14,7 +14,19 @@ const prototype = {
         return this;
     },
 
-    set(value, ...coordinates) {
+    clone() {
+        return Object.assign(
+            Object.create(prototype).init(...this.dimensions),
+            {
+                array: Array.from(this.array)
+            }
+        );
+    },
+
+    setM(...params) {
+        const coordinates = params.slice(0, -1);
+        const value       = params[params.length - 1];
+
         this.array[this.findIndex(...coordinates)] = value;
 
         return this;
@@ -41,7 +53,8 @@ const prototype = {
     },
 
     isInside(...coordinates) {
-        return coordinates.every((item, index) => item < this.dimensions[index]);
+        return coordinates.length == this.dimensions.length &&
+            coordinates.every((item, index) => item < this.dimensions[index]);
     },
 
     getDimensions() {
@@ -49,7 +62,7 @@ const prototype = {
     },
 
     getNeighbours(...coordinates) {
-        let rest   = this.getAreaAround(...coordinates).slice();
+        let rest   = this.getAreaAround(...coordinates);
         let points = [];
 
         const addPoints = (points, [set, ...rest]) => {

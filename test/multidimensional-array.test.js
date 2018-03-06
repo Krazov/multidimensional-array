@@ -73,9 +73,9 @@ describe('called', () => {
 
         const expectedProps = [
             'array', 'dimensions', 'init',
-            'set', 'get', 'findIndex', 'isInside',
+            'setM', 'get', 'findIndex', 'isInside',
             'getDimensions', 'getAreaAround', 'getNeighbours',
-            // 'clone'
+            'clone',
             // 'map',
             // 'map2dRow', 'map2dColumn'
             // filter of some sort?
@@ -107,10 +107,34 @@ describe('called', () => {
     });
 });
 
+describe('clone', () => {
+    const { clone } = getPrototype();
+
+    test('should create exact copy of 1D object', () => {
+        const flat = getFullFlat();
+
+        expect(typeof clone.call(flat)).toBe('object');
+        expect(clone.call(flat)).not.toBe(flat);
+        expect(Object.getPrototypeOf(clone.call(flat))).toBe(Object.getPrototypeOf(flat));
+        expect(Object.keys(clone.call(flat))).toEqual(expect.arrayContaining(Object.keys(flat)));
+        expect(clone.call(flat)).toEqual({ array: flat.array, dimensions: flat.dimensions });
+    });
+
+    test('should create exact copy of 2D object', () => {
+        const full = getFull2d();
+
+        expect(typeof clone.call(full)).toBe('object');
+        expect(clone.call(full)).not.toBe(full);
+        expect(Object.getPrototypeOf(clone.call(full))).toBe(Object.getPrototypeOf(full));
+        expect(Object.keys(clone.call(full))).toEqual(expect.arrayContaining(Object.keys(full)));
+        expect(clone.call(full)).toEqual({ array: full.array, dimensions: full.dimensions });
+    });
+});
+
 describe('isInside', () => {
     const { isInside } = getPrototype();
 
-    test('returns true when coordinates are inside 2D array', () => {
+    test('should return true when coordinates are inside 2D array', () => {
         const exemplary = getExemplary2d();
 
         expect(isInside.call(exemplary, 0, 0)).toBe(true);
@@ -124,7 +148,7 @@ describe('isInside', () => {
         expect(isInside.call(exemplary, 2, 2)).toBe(true);
     });
 
-    test('returns false when coordinates are outside 2D array', () => {
+    test('should return false when coordinates are outside 2D array', () => {
         const exemplary = getExemplary2d();
 
         expect(isInside.call(exemplary, 0, 3)).toBe(false);
@@ -193,21 +217,21 @@ describe('get', () => {
     });
 });
 
-describe('set', () => {
-    const { set } = getPrototype();
+describe('setM', () => {
+    const { setM } = getPrototype();
 
     // TODO: should actually return new instance of itself
     test('should be chainable (return itself)', () => {
         const full = getFull2d();
 
-        expect(set.call(full, 70150, 1, 1)).toBe(full);
+        expect(setM.call(full, 1, 1, 70150)).toBe(full);
     });
 
     test('should change the value of cell #1', () => {
         const full = getFull2d();
 
         expect(full.array[3]).toBe(13);
-        set.call(full, 666, 1, 0);
+        setM.call(full, 1, 0, 666);
         expect(full.array[3]).toBe(666);
     });
 
@@ -215,7 +239,7 @@ describe('set', () => {
         const full = getFull2d();
 
         expect(full.array[8]).toBe(18);
-        set.call(full, 666, 2, 2);
+        setM.call(full, 2, 2, 666);
         expect(full.array[8]).toBe(666);
     });
 
@@ -223,7 +247,7 @@ describe('set', () => {
         const full = getFull2d();
 
         expect(() => {
-            expect(set.call(full, 667, 4, 4));
+            expect(setM.call(full, 4, 4, 667));
         }).toThrow();
     });
 });
