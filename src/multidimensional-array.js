@@ -42,15 +42,10 @@ const prototype = {
             throw new RangeError('Coordinates outside of multidimensional array. Sorry.');
         }
 
-        if (coordinates.length == 1) {
-            return coordinates[0];
-        }
+        const { length } = coordinates;
 
-        // else
-        const most = coordinates.slice(0, -1);
-        const last = coordinates.slice(-1)[0];
-
-        return most.reduce((final, current, index) => final + current * this.dimensions[index], 0) + last;
+        return length == 1 ? coordinates[0] : coordinates.slice(0, -1)
+            .reduce((final, current, index) => final + current * this.dimensions[index], 0) + coordinates[length - 1];
     },
 
     isInside(...coordinates) {
