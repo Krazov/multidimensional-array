@@ -24,12 +24,13 @@ const prototype = {
     },
 
     setM(...params) {
-        const coordinates = params.slice(0, -1);
-        const value       = params[params.length - 1];
-
-        this.array[this.findIndex(...coordinates)] = value;
+        this.array[this.findIndex(...params.slice(0, -1))] = params[params.length - 1];
 
         return this;
+    },
+
+    set(...params) {
+        return this.clone().setM(...params);
     },
 
     get(...coordinates) {

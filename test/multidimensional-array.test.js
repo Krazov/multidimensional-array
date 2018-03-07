@@ -72,10 +72,12 @@ describe('called', () => {
         expect(typeof mProto).toBe('object');
 
         const expectedProps = [
-            'array', 'dimensions', 'init',
-            'setM', 'get', 'findIndex', 'isInside',
+            'array', 'dimensions',
+            'init', 'clone',
+            'setM', 'set', 'get',
+            // 'setManyM', 'setMany'
+            'findIndex', 'isInside',
             'getDimensions', 'getAreaAround', 'getNeighbours',
-            'clone',
             // 'map',
             // 'map2dRow', 'map2dColumn'
             // filter of some sort?
@@ -220,7 +222,6 @@ describe('get', () => {
 describe('setM', () => {
     const { setM } = getPrototype();
 
-    // TODO: should actually return new instance of itself
     test('should be chainable (return itself)', () => {
         const full = getFull2d();
 
@@ -248,6 +249,44 @@ describe('setM', () => {
 
         expect(() => {
             expect(setM.call(full, 4, 4, 667));
+        }).toThrow();
+    });
+});
+
+describe('set', () => {
+    const { set } = getPrototype();
+
+    test('should be chainable (return itself)', () => {
+        const full = getFull2d();
+
+        expect(set.call(full, 1, 1, 70150)).not.toBe(full);
+    });
+
+    test('should change the value of cell #1', () => {
+        const full = getFull2d();
+
+        expect(full.array[3]).toBe(13);
+        expect(
+            Object.getPrototypeOf(set.call(full, 1, 0, 666))
+        ).toBe(Object.getPrototypeOf(full));
+        expect(set.call(full, 1, 0, 666).get(1, 0)).toBe(666);
+    });
+
+    test('should change the value of cell #2', () => {
+        const full = getFull2d();
+
+        expect(full.array[8]).toBe(18);
+        expect(
+            Object.getPrototypeOf(set.call(full, 2, 2, 666))
+        ).toBe(Object.getPrototypeOf(full));
+        expect(set.call(full, 2, 2, 666).get(2, 2)).toBe(666);
+    });
+
+    test('should throw an error for mismatched coordinates', () => {
+        const full = getFull2d();
+
+        expect(() => {
+            expect(set.call(full, 4, 4, 667));
         }).toThrow();
     });
 });
