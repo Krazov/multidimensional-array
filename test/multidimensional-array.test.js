@@ -77,6 +77,7 @@ describe('called', () => {
             'setM', 'set', 'get',
             // 'setManyM', 'setMany'
             'findIndex', 'isInside',
+            // 'findCoordinates',
             'getDimensions', 'getAreaAround', 'getNeighbours',
             // 'map',
             // 'map2dRow', 'map2dColumn'
