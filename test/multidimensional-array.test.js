@@ -76,8 +76,7 @@ describe('called', () => {
             'init', 'clone',
             'setM', 'set', 'get',
             // 'setManyM', 'setMany'
-            'findIndex', 'isInside',
-            // 'findCoordinates',
+            'findIndex', 'findCoordinates', 'isInside',
             'getDimensions', 'getAreaAround', 'getNeighbours',
             // 'map',
             // 'map2dRow', 'map2dColumn'
@@ -185,11 +184,74 @@ describe('findIndex', () => {
         expect(findIndex.call(exemplary, 2, 2)).toBe(8);
     });
 
+    // TODO: 3D array
+
     test('should throw an error for mismatched coordinates', () => {
         const exemplary = getExemplary2d();
 
         expect(() => {
             findIndex.call(exemplary, 4, 4);
+        }).toThrow();
+    });
+});
+
+describe('findCoordinates', () => {
+    const { findCoordinates } = getPrototype();
+
+    test('should calculate proper coordinates for given index of 1D array', () => {
+        const flat = getFullFlat();
+
+        expect(findCoordinates.call(flat, 0)).toHaveLength(1);
+        expect(findCoordinates.call(flat, 1)).toHaveLength(1);
+        expect(findCoordinates.call(flat, 2)).toHaveLength(1);
+        expect(findCoordinates.call(flat, 3)).toHaveLength(1);
+        expect(findCoordinates.call(flat, 4)).toHaveLength(1);
+        expect(findCoordinates.call(flat, 5)).toHaveLength(1);
+        expect(findCoordinates.call(flat, 6)).toHaveLength(1);
+
+        expect(findCoordinates.call(flat, 0)).toEqual(expect.arrayContaining([0]));
+        expect(findCoordinates.call(flat, 1)).toEqual(expect.arrayContaining([1]));
+        expect(findCoordinates.call(flat, 2)).toEqual(expect.arrayContaining([2]));
+        expect(findCoordinates.call(flat, 3)).toEqual(expect.arrayContaining([3]));
+        expect(findCoordinates.call(flat, 4)).toEqual(expect.arrayContaining([4]));
+        expect(findCoordinates.call(flat, 5)).toEqual(expect.arrayContaining([5]));
+        expect(findCoordinates.call(flat, 6)).toEqual(expect.arrayContaining([6]));
+    });
+
+    test('should calculate proper coordinates for given index of 2D array', () => {
+        const full = getFull2d();
+
+        expect(findCoordinates.call(full, 0)).toHaveLength(2);
+        expect(findCoordinates.call(full, 1)).toHaveLength(2);
+        expect(findCoordinates.call(full, 2)).toHaveLength(2);
+        expect(findCoordinates.call(full, 3)).toHaveLength(2);
+        expect(findCoordinates.call(full, 4)).toHaveLength(2);
+        expect(findCoordinates.call(full, 5)).toHaveLength(2);
+        expect(findCoordinates.call(full, 6)).toHaveLength(2);
+        expect(findCoordinates.call(full, 7)).toHaveLength(2);
+        expect(findCoordinates.call(full, 8)).toHaveLength(2);
+
+        expect(findCoordinates.call(full, 0)).toEqual(expect.arrayContaining([0, 0]));
+        expect(findCoordinates.call(full, 1)).toEqual(expect.arrayContaining([0, 1]));
+        expect(findCoordinates.call(full, 2)).toEqual(expect.arrayContaining([0, 2]));
+        expect(findCoordinates.call(full, 3)).toEqual(expect.arrayContaining([1, 0]));
+        expect(findCoordinates.call(full, 4)).toEqual(expect.arrayContaining([1, 1]));
+        expect(findCoordinates.call(full, 5)).toEqual(expect.arrayContaining([1, 2]));
+        expect(findCoordinates.call(full, 6)).toEqual(expect.arrayContaining([2, 0]));
+        expect(findCoordinates.call(full, 7)).toEqual(expect.arrayContaining([2, 1]));
+        expect(findCoordinates.call(full, 8)).toEqual(expect.arrayContaining([2, 2]));
+    });
+
+    test('should throw an error for mismatched coordinates', () => {
+        const flat = getFullFlat();
+        const full = getFull2d();
+
+        expect(() => {
+            findCoordinates.call(flat, 8);
+        }).toThrow();
+
+        expect(() => {
+            findCoordinates.call(full, 9);
         }).toThrow();
     });
 });

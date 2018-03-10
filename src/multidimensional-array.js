@@ -1,5 +1,7 @@
 'use strict';
 
+const getLast = (array) => array[array.length - 1];
+
 const prototype = {
     array:      [],
     dimensions: [],
@@ -45,7 +47,35 @@ const prototype = {
         const { length } = coordinates;
 
         return length == 1 ? coordinates[0] : coordinates.slice(0, -1)
-            .reduce((final, current, index) => final + current * this.dimensions[index], 0) + coordinates[length - 1];
+            .reduce((final, current, index) => final + current * this.dimensions[index], 0) + getLast(coordinates);
+    },
+
+    findCoordinates(index) {
+        const { array: { length: areaSize }, dimensions } = this;
+
+        if (index >= areaSize) {
+            throw new RangeError('Coordinates outside of multidimensional array. Sorry.');
+        }
+
+        if (dimensions.length == 1) {
+            return [index];
+        }
+
+        return dimensions.reduce(
+            (solution, dimension, dIndex) => {
+                switch (dIndex) {
+                case 1:
+                    solution.unshift((index / dimension) | 0);
+                    break;
+                case 0:
+                    solution.unshift(index % dimension);
+                    break;
+                }
+
+                return solution;
+            },
+            []
+        );
     },
 
     isInside(...coordinates) {
